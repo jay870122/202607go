@@ -70,16 +70,19 @@
 
             <div class="sticky top-0 z-40 bg-slate-100 pb-4 pt-1 mb-2">
                 <div class="bg-white p-1 rounded-lg shadow-sm border border-slate-200 flex text-xs font-bold text-slate-500 overflow-x-auto no-scrollbar">
-                    <button onclick="filterGroup('ALL')" class="filter-btn flex-none py-1.5 px-3 rounded-md transition bg-slate-100 text-slate-800 shadow-sm whitespace-nowrap" id="btn-all">
-                        全員視角
+                    <button onclick="filterGroup('ALL')" class="filter-btn flex-none py-1.5 px-3 rounded-md transition bg-slate-100 text-slate-800 shadow-sm whitespace-nowrap flex items-center" id="btn-all">
+                        <i class="fa-solid fa-users mr-1.5 text-slate-400"></i>全員視角
                     </button>
-                    <button onclick="filterGroup('A')" class="filter-btn flex-none py-1.5 px-3 rounded-md transition hover:bg-slate-50 whitespace-nowrap" id="btn-a">
+                    <button onclick="filterGroup('A')" class="filter-btn flex-none py-1.5 px-3 rounded-md transition hover:bg-slate-50 whitespace-nowrap flex items-center" id="btn-a">
+                        <span class="bg-blue-500 text-white px-1.5 py-0.5 rounded text-[10px] mr-1.5">A組</span>
                         <span class="text-blue-600">港日12天 (暐傑等4人)</span>
                     </button>
-                    <button onclick="filterGroup('B')" class="filter-btn flex-none py-1.5 px-3 rounded-md transition hover:bg-slate-50 whitespace-nowrap" id="btn-b">
+                    <button onclick="filterGroup('B')" class="filter-btn flex-none py-1.5 px-3 rounded-md transition hover:bg-slate-50 whitespace-nowrap flex items-center" id="btn-b">
+                         <span class="bg-emerald-500 text-white px-1.5 py-0.5 rounded text-[10px] mr-1.5">B組</span>
                          <span class="text-emerald-600">港日9天 (偉庭等4人)</span>
                     </button>
-                    <button onclick="filterGroup('C')" class="filter-btn flex-none py-1.5 px-3 rounded-md transition hover:bg-slate-50 whitespace-nowrap" id="btn-c">
+                    <button onclick="filterGroup('C')" class="filter-btn flex-none py-1.5 px-3 rounded-md transition hover:bg-slate-50 whitespace-nowrap flex items-center" id="btn-c">
+                        <span class="bg-orange-500 text-white px-1.5 py-0.5 rounded text-[10px] mr-1.5">C組</span>
                         <span class="text-orange-500">純關西5天 (冠宇等3人)</span>
                     </button>
                 </div>
@@ -137,11 +140,13 @@
                     <div class="bg-white rounded-xl p-4 shadow-sm ml-4 border-l-4 border-blue-400">
                         <div class="flex justify-between items-baseline mb-2">
                             <h3 class="font-bold text-lg">7/21 (二)</h3>
-                            <span class="text-[10px] font-bold text-blue-500 bg-blue-50 px-2 py-1 rounded">太平山頂</span>
+                            <span class="text-[10px] font-bold text-blue-500 bg-blue-50 px-2 py-1 rounded">親子放電 & 太平山頂</span>
                         </div>
                         <ul class="space-y-2 text-sm text-slate-600">
-                            <li class="flex items-start"><i class="fa-solid fa-train-tram mt-1 mr-2 text-slate-400"></i> 搭乘第六代山頂纜車前往太平山頂</li>
-                            <li class="flex items-start"><i class="fa-solid fa-city mt-1 mr-2 text-slate-400"></i> 凌霄閣摩天台 428 欣賞維港絕美夜景</li>
+                            <li class="flex items-start"><i class="fa-solid fa-flask mt-1 mr-2 text-slate-400 w-4 text-center"></i> <div><b>香港科學館 / 太空館</b><br><span class="text-xs text-slate-400">飯店步行可達，最佳室內親子放電所</span></div></li>
+                            <li class="flex items-start"><i class="fa-solid fa-ferry mt-1 mr-2 text-slate-400 w-4 text-center"></i> <div><b>天星小輪</b><br><span class="text-xs text-slate-400">傍晚搭乘百年經典渡輪橫渡維多利亞港</span></div></li>
+                            <li class="flex items-start"><i class="fa-solid fa-train-tram mt-1 mr-2 text-slate-400 w-4 text-center"></i> 搭乘第六代山頂纜車前往太平山頂</li>
+                            <li class="flex items-start"><i class="fa-solid fa-city mt-1 mr-2 text-slate-400 w-4 text-center"></i> 凌霄閣摩天台 428 欣賞維港絕美夜景</li>
                         </ul>
                     </div>
                 </div>
@@ -231,7 +236,15 @@
                             <li class="flex items-start"><i class="fa-solid fa-door-open mt-1 mr-2 text-slate-400"></i> 11:00 前退房</li>
                             <li class="flex items-start"><i class="fa-solid fa-train mt-1 mr-2 text-slate-400"></i> 移動至心齋橋市區</li>
                             <li class="flex items-start font-bold text-purple-600"><i class="fa-solid fa-hotel mt-1 mr-2"></i> 入住 大阪心齋橋橋樑飯店</li>
-                            <li class="flex items-start"><i class="fa-solid fa-bag-shopping mt-1 mr-2 text-slate-400"></i> 心齋橋、道頓堀商圈逛街吃美食</li>
+                            <li class="flex items-start">
+                                <i class="fa-solid fa-bag-shopping mt-1 mr-2 text-slate-400"></i> 
+                                <div>
+                                    心齋橋、道頓堀商圈逛街吃美食
+                                    <a href="https://bobbyfun.tw/2024-01-03-2646/" target="_blank" class="inline-block ml-1 mt-0.5 text-[10px] text-purple-600 border border-purple-200 bg-purple-50 px-1.5 py-0.5 rounded hover:bg-purple-100 transition-colors whitespace-nowrap">
+                                        <i class="fa-solid fa-map-location-dot mr-1"></i>逛街地圖攻略
+                                    </a>
+                                </div>
+                            </li>
                             <li class="flex items-start text-xs mt-2 bg-purple-50 p-2 rounded text-slate-500">
                                 晚上 15:00~21:30 飯店有提供免費酒水暢飲，以及特色拉麵宵夜！
                             </li>
