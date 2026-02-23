@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>2026 港日夏日接力之旅</title>
+    
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>✈️</text></svg>">
+    
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#2563eb">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  
+    <style>
+        body { font-family: 'Noto Sans TC', sans-serif; background-color: #f0f4f8; }
+        .font-mono-display { font-family: 'Share Tech Mono', monospace; }
+        
+        /* App Navigation Styles */
+        .nav-item { transition: all 0.3s ease; }
+        .nav-item.active { color: #2563eb; transform: translateY(-2px); }
+        .nav-item.active i { transform: scale(1.1); }
+        .nav-indicator { position: absolute; top: 0; left: 0; width: 25%; height: 3px; background: #2563eb; transition: all 0.3s ease; }
+
+        /* Content Transition */
+        .tab-content { display: none; animation: fadeIn 0.3s ease-in-out; }
+        .tab-content.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Filter Animations */
+        .filterable-item { transition: all 0.3s ease; }
+        .hidden-item { display: none !important; }
+
+        /* Specific Component Styles */
+        .timeline-line { position: absolute; left: 18px; top: 20px; bottom: -20px; width: 2px; background-color: #cbd5e1; z-index: 0; }
+        .timeline-dot { z-index: 10; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .pb-safe { padding-bottom: env(safe-area-inset-bottom); }
+
+        /* Flight Board */
+        .flight-board { background-color: #1e293b; color: #e2e8f0; }
+        .flight-row { border-bottom: 1px solid #334155; }
+        .flight-row:last-child { border-bottom: none; }
+    </style>
+</head>
+<body class="text-slate-700 bg-slate-100 h-screen flex flex-col overflow-hidden">
+
+    <header class="bg-gradient-to-r from-blue-600 to-indigo-700 text-white p-4 shadow-lg shrink-0 z-50 pt-safe-top">
+        <div class="max-w-3xl mx-auto flex justify-between items-center">
+            <div>
+                <h1 class="text-lg font-bold flex items-center">
+                   <span class="mr-2 text-xl">✈️</span> 2026 港日夏日接力
+                </h1>
+                <p id="header-date" class="text-blue-100 text-xs mt-0.5 ml-8">7/19 (日) ~ 7/30 (四)｜共 12 天</p>
+            </div>
+            <div class="text-right">
+                <div class="bg-white/20 px-2 py-1 rounded text-xs">
+                    <i class="fa-solid fa-users mr-1"></i>11人
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-1 overflow-y-auto no-scrollbar pb-24 relative" id="main-scroll">
+        <div class="max-w-3xl mx-auto p-4 min-h-full">
+
+            <div class="sticky top-0 z-40 bg-slate-100 pb-4 pt-1 mb-2">
+                <div class="bg-white p-1 rounded-lg shadow-sm border border-slate-200 flex text-xs font-bold text-slate-500 overflow-x-auto no-scrollbar">
+                    <button onclick="filterGroup('ALL')" class="filter-btn flex-none py-1.5 px-3 rounded-md transition bg-slate-100 text-slate-800 shadow-sm whitespace-nowrap" id="btn-all">
+                        全員視角
+                    </button>
+                    <button onclick="filterGroup('A')" class="filter-btn flex-none py-1.5 px-3 rounded-md transition hover:bg-slate-50 whitespace-nowrap" id="btn-a">
+                        <span class="text-blue-600">港日12天 (暐傑等4人)</span>
+                    </button>
+                    <button onclick="filterGroup('B')" class="filter-btn flex-none py-1.5 px-3 rounded-md transition hover:bg-slate-50 whitespace-nowrap" id="btn-b">
+                         <span class="text-emerald-600">港日9天 (偉庭等4人)</span>
+                    </button>
+                    <button onclick="filterGroup('C')" class="filter-btn flex-none py-1.5 px-3 rounded-md transition hover:bg-slate-50 whitespace-nowrap" id="btn-c">
+                        <span class="text-orange-500">純關西5天 (冠宇等3人)</span>
+                    </button>
+                </div>
+            </div>
+
+            <div id="tab-itinerary" class="tab-content active space-y-6">
+                
+                <div class="relative pl-8 filterable-item multi-group" data-groups="A,B">
+                    <div class="timeline-line"></div>
+                    <div class="timeline-dot absolute left-0 top-1 w-10 h-10 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold shadow-md z-10">D1</div>
+                    <div class="bg-white rounded-xl p-4 shadow-sm ml-4 border-l-4 border-blue-400">
+                        <div class="flex justify-between items-baseline mb-2">
+                            <h3 class="font-bold text-lg">7/19 (日)</h3>
+                            <span class="text-[10px] font-bold text-blue-500 bg-blue-50 px-2 py-1 rounded">香港先遣部隊出發</span>
+                        </div>
+                        <ul class="space-y-2 text-sm text-slate-600">
+                            <li class="flex items-start"><i class="fa-solid fa-plane mt-1 mr-2 text-slate-400"></i> 08:50 抵達香港國際機場</li>
+                            <li class="flex items-start"><i class="fa-solid fa-hotel mt-1 mr-2 text-slate-400"></i> 入住 基督教青年會 (港青)</li>
+                            <li class="flex items-center"><i class="fa-solid fa-utensils mr-2 text-slate-400"></i> 香港市區吃喝玩樂</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="relative pl-8 filterable-item multi-group" data-groups="A,B">
+                    <div class="timeline-line"></div>
+                    <div class="timeline-dot absolute left-0 top-1 w-10 h-10 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold shadow-md z-10">D2</div>
+                    <div class="bg-white rounded-xl p-4 shadow-sm ml-4 border-l-4 border-blue-400">
+                        <div class="flex justify-between items-baseline mb-2">
+                            <h3 class="font-bold text-lg">7/20 (一)</h3>
+                            <span class="text-[10px] font-bold text-blue-500 bg-blue-50 px-2 py-1 rounded">香港迪士尼</span>
+                        </div>
+                        <ul class="space-y-2 text-sm text-slate-600">
+                            <li class="flex items-start"><i class="fa-solid fa-ticket mt-1 mr-2 text-slate-400"></i> 香港迪士尼樂園 全日遊</li>
+                            <li class="flex items-start"><i class="fa-solid fa-wand-magic-sparkles mt-1 mr-2 text-slate-400"></i> 魔雪奇緣世界、夜間星夢光影之旅</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="relative pl-8 filterable-item multi-group" data-groups="A,B">
+                    <div class="timeline-line"></div>
+                    <div class="timeline-dot absolute left-0 top-1 w-10 h-10 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold shadow-md z-10">D3</div>
+                    <div class="bg-white rounded-xl p-4 shadow-sm ml-4 border-l-4 border-blue-400">
+                        <div class="flex justify-between items-baseline mb-2">
+                            <h3 class="font-bold text-lg">7/21 (二)</h3>
+                            <span class="text-[10px] font-bold text-blue-500 bg-blue-50 px-2 py-1 rounded">太平山頂</span>
+                        </div>
+                        <ul class="space-y-2 text-sm text-slate-600">
+                            <li class="flex items-start"><i class="fa-solid fa-train-tram mt-1 mr-2 text-slate-400"></i> 搭乘第六代山頂纜車前往太平山頂</li>
+                            <li class="flex items-start"><i class="fa-solid fa-city mt-1 mr-2 text-slate-400"></i> 凌霄閣摩天台 428 欣賞維港絕美夜景</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="relative pl-8 filterable-item multi-group" data-groups="A,B">
+                    <div class="timeline-line"></div>
+                    <div class="timeline-dot absolute left-0 top-1 w-10 h-10 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold shadow-md z-10">D4</div>
+                    <div class="bg-white rounded-xl p-4 shadow-sm ml-4">
+                        <div class="flex justify-between items-baseline mb-2">
+                            <h3 class="font-bold text-lg">7/22 (三)</h3>
+                            <span class="text-[10px] font-bold text-blue-500 bg-blue-50 px-2 py-1 rounded">快閃回台轉機</span>
+                        </div>
+                        <ul class="space-y-2 text-sm text-slate-600">
+                            <li class="flex items-start"><i class="fa-solid fa-plane-arrival mt-1 mr-2 text-slate-400"></i> 15:20 抵達桃園機場</li>
+                            <li class="flex items-start text-xs text-slate-400 font-bold"><i class="fa-solid fa-bed mt-1 mr-2"></i> 回家補眠，準備隔日一早轉戰日本</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="relative pl-8 filterable-item multi-group" data-groups="A,B,C">
+                    <div class="timeline-line"></div>
+                    <div class="timeline-dot absolute left-0 top-1 w-10 h-10 bg-emerald-500 text-white rounded-full flex items-center justify-center font-bold shadow-md z-10 ring-4 ring-emerald-100">D5</div>
+                    <div class="bg-white rounded-xl p-4 shadow-sm ml-4 border-l-4 border-emerald-400">
+                        <div class="flex justify-between items-baseline mb-2">
+                            <h3 class="font-bold text-lg">7/23 (四)</h3>
+                            <span class="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-1 rounded">11人全員日本大合體</span>
+                        </div>
+                        <ul class="space-y-2 text-sm text-slate-600">
+                            <li class="flex items-start"><i class="fa-solid fa-plane mt-1 mr-2 text-slate-400"></i> 10:10 抵達關西機場</li>
+                            <li class="flex items-start"><i class="fa-solid fa-bag-shopping mt-1 mr-2 text-slate-400"></i> 臨空城 (Rinku Premium Outlets) 逛街</li>
+                            <li class="flex items-start"><i class="fa-solid fa-train mt-1 mr-2 text-slate-400"></i> 前往環球影城商圈</li>
+                            <li class="flex items-start text-emerald-600 font-bold"><i class="fa-solid fa-hotel mt-1 mr-2"></i> 入住 環球影城東方飯店</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="relative pl-8 filterable-item multi-group" data-groups="A,B,C">
+                    <div class="timeline-line"></div>
+                    <div class="timeline-dot absolute left-0 top-1 w-10 h-10 bg-emerald-500 text-white rounded-full flex items-center justify-center font-bold shadow-md z-10">D6</div>
+                    <div class="bg-white rounded-xl p-4 shadow-sm ml-4 border-l-4 border-emerald-400">
+                        <div class="flex justify-between items-baseline mb-2">
+                            <h3 class="font-bold text-lg">7/24 (五)</h3>
+                            <span class="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-1 rounded">暢遊USJ</span>
+                        </div>
+                        <ul class="space-y-2 text-sm text-slate-600">
+                            <li class="flex items-start"><i class="fa-solid fa-earth-americas mt-1 mr-2 text-slate-400"></i> 日本環球影城 (USJ) 全日遊</li>
+                            <li class="flex items-start"><i class="fa-solid fa-masks-theater mt-1 mr-2 text-slate-400"></i> 瑪利歐、哈利波特園區大冒險</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="relative pl-8 filterable-item multi-group" data-groups="A,B,C">
+                    <div class="timeline-line"></div>
+                    <div class="timeline-dot absolute left-0 top-1 w-10 h-10 bg-purple-500 text-white rounded-full flex items-center justify-center font-bold shadow-md z-10">D7</div>
+                    <div class="bg-white rounded-xl p-4 shadow-sm ml-4 border-l-4 border-purple-400">
+                        <div class="flex justify-between items-baseline mb-2">
+                            <h3 class="font-bold text-lg">7/25 (六)</h3>
+                            <span class="text-[10px] font-bold text-purple-600 bg-purple-50 px-2 py-1 rounded">轉移陣地</span>
+                        </div>
+                        <ul class="space-y-2 text-sm text-slate-600">
+                            <li class="flex items-start"><i class="fa-solid fa-door-open mt-1 mr-2 text-slate-400"></i> 11:00 前退房</li>
+                            <li class="flex items-start"><i class="fa-solid fa-train mt-1 mr-2 text-slate-400"></i> 移動至心齋橋市區</li>
+                            <li class="flex items-start font-bold text-purple-600"><i class="fa-solid fa-hotel mt-1 mr-2"></i> 入住 大阪心齋橋橋樑飯店</li>
+                            <li class="flex items-start"><i class="fa-solid fa-bag-shopping mt-1 mr-2 text-slate-400"></i> 心齋橋、道頓堀商圈逛街吃美食</li>
+                            <li class="flex items-start text-xs mt-2 bg-purple-50 p-2 rounded text-slate-500">
+                                晚上 15:00~21:30 飯店有提供免費酒水暢飲，以及特色拉麵宵夜！
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="relative pl-8 filterable-item multi-group" data-groups="A,B,C">
+                    <div class="timeline-line"></div>
+                    <div class="timeline-dot absolute left-0 top-1 w-10 h-10 bg-purple-500 text-white rounded-full flex items-center justify-center font-bold shadow-md z-10">D8</div>
+                    <div class="bg-white rounded-xl p-4 shadow-sm ml-4 border-l-4 border-purple-400">
+                        <div class="flex justify-between items-baseline mb-2">
+                            <h3 class="font-bold text-lg">7/26 (日)</h3>
+                            <span class="text-[10px] font-bold text-purple-600 bg-purple-50 px-2 py-1 rounded">奈良尋鹿</span>
+                        </div>
+                        <ul class="space-y-2 text-sm text-slate-600">
+                            <li class="flex items-start"><i class="fa-solid fa-train mt-1 mr-2 text-slate-400"></i> 搭乘近鐵前往奈良</li>
+                            <li class="flex items-start"><i class="fa-solid fa-paw mt-1 mr-2 text-slate-400"></i> 奈良公園餵小鹿、東大寺參拜</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="relative pl-8 filterable-item multi-group" data-groups="A,B,C">
+                    <div class="timeline-line"></div>
+                    <div class="timeline-dot absolute left-0 top-1 w-10 h-10 bg-orange-500 text-white rounded-full flex items-center justify-center font-bold shadow-md z-10">D9</div>
+                    <div class="bg-white rounded-xl p-4 shadow-sm ml-4">
+                        <div class="flex justify-between items-baseline mb-2">
+                            <h3 class="font-bold text-lg">7/27 (一)</h3>
+                            <span class="text-[10px] font-bold text-orange-600 bg-orange-50 px-2 py-1 rounded">兵分兩路</span>
+                        </div>
+                        
+                        <div class="mb-3 pb-3 border-b border-dashed border-slate-200 filterable-item multi-group" data-groups="B,C">
+                            <span class="text-xs font-bold text-orange-500"><i class="fa-solid fa-plane-departure mr-1"></i> B組與C組 (第一批返台)</span>
+                            <ul class="space-y-2 text-sm text-slate-600 mt-2">
+                                <li class="flex items-start"><i class="fa-solid fa-plane-arrival mt-1 mr-2 text-slate-400"></i> 20:30 抵達桃園機場</li>
+                                <li class="flex items-start text-xs text-orange-500 font-bold"><i class="fa-solid fa-handshake-angle mt-1 mr-2"></i> 偉庭等7人 行程結束</li>
+                            </ul>
+                        </div>
+
+                        <div class="filterable-item" data-group="A">
+                            <span class="text-xs font-bold text-teal-600"><i class="fa-solid fa-train mr-1"></i> A組 (轉戰京都)</span>
+                            <ul class="space-y-2 text-sm text-slate-600 mt-2">
+                                <li class="flex items-start"><i class="fa-solid fa-map-location-dot mt-1 mr-2 text-slate-400"></i> 移動至京都車站周邊</li>
+                                <li class="flex items-start font-bold text-teal-600"><i class="fa-solid fa-hotel mt-1 mr-2"></i> 入住 京都塔飯店分館</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="relative pl-8 filterable-item" data-group="A">
+                    <div class="timeline-line bg-transparent"></div>
+                    <div class="timeline-dot absolute left-0 top-1 w-10 h-10 bg-slate-800 text-white rounded-full flex items-center justify-center font-bold shadow-md z-10">D12</div>
+                    <div class="bg-white rounded-xl p-4 shadow-sm ml-4">
+                        <div class="flex justify-between items-baseline mb-2">
+                            <h3 class="font-bold text-lg">7/30 (四)</h3>
+                            <span class="text-[10px] font-bold text-slate-600 bg-slate-200 px-2 py-1 rounded">圓滿賦歸</span>
+                        </div>
+                        <ul class="space-y-2 text-sm text-slate-600">
+                            <li class="flex items-start"><i class="fa-solid fa-train mt-1 mr-2 text-slate-400"></i> 從京都搭乘 HARUKA 等交通工具前往關西機場</li>
+                            <li class="flex items-start"><i class="fa-solid fa-plane-arrival mt-1 mr-2 text-slate-400"></i> 20:30 抵達桃園機場</li>
+                            <li class="flex items-start text-xs text-blue-600 font-bold"><i class="fa-solid fa-house mt-1 mr-2"></i> A組 (暐傑等4人) 12天行程結束</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div id="tab-flights" class="tab-content space-y-4">
+                <div class="bg-slate-800 rounded-2xl overflow-hidden shadow-lg border border-slate-700">
+                    <div class="bg-slate-900 p-4 flex justify-between items-center text-white border-b border-slate-700">
+                        <h2 class="font-bold flex items-center">
+                            <i class="fa-solid fa-plane-departure mr-2 text-yellow-400"></i> 航班資訊
+                        </h2>
+                    </div>
+                    
+                    <div class="flight-board p-0">
+                        <div class="flight-row p-4 relative filterable-item multi-group" data-groups="A,B">
+                            <div class="flex justify-between items-start mb-3">
+                                <div class="flex items-center flex-wrap gap-1">
+                                    <span class="text-[10px] font-bold bg-blue-600 text-white px-2 py-0.5 rounded">A, B 組別</span>
+                                    <span class="font-mono-display text-xl text-yellow-400 tracking-wider ml-1">BR891</span>
+                                </div>
+                                <div class="text-[10px] text-slate-500 font-mono-display">7/19 (SUN)</div>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <div class="text-center"><div class="text-2xl font-mono-display font-bold">07:00</div><div class="text-[10px] text-slate-400">TPE</div></div>
+                                <div class="flex-1 px-4 flex flex-col items-center"><div class="w-full h-0.5 bg-slate-600 relative"><i class="fa-solid fa-plane absolute text-slate-300 text-xs left-1/2 -top-1.5 -ml-1.5 transform rotate-45"></i></div><div class="text-[10px] text-slate-400 mt-1">8人搭乘</div></div>
+                                <div class="text-center"><div class="text-2xl font-mono-display font-bold">08:50</div><div class="text-[10px] text-slate-400">HKG</div></div>
+                            </div>
+                            <div class="text-right mt-3">
+                                <a href="https://tw.trip.com/actualtime/detail.html?flightNo=BR891&departCity=TPE&arriveCity=HKG&date=2026-07-19&locale=zh-TW" target="_blank" class="text-[10px] text-blue-300 hover:text-white transition border border-blue-500/50 hover:bg-blue-600/50 px-2 py-1 rounded inline-flex items-center">
+                                    Trip.com 航班動態 <i class="fa-solid fa-arrow-up-right-from-square ml-1"></i>
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="flight-row p-4 relative filterable-item multi-group" data-groups="A,B">
+                            <div class="flex justify-between items-start mb-3">
+                                <div class="flex items-center flex-wrap gap-1">
+                                    <span class="text-[10px] font-bold bg-blue-600 text-white px-2 py-0.5 rounded">A, B 組別</span>
+                                    <span class="font-mono-display text-xl text-yellow-400 tracking-wider ml-1">BR868</span>
+                                </div>
+                                <div class="text-[10px] text-slate-500 font-mono-display">7/22 (WED)</div>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <div class="text-center"><div class="text-2xl font-mono-display font-bold">13:30</div><div class="text-[10px] text-slate-400">HKG</div></div>
+                                <div class="flex-1 px-4 flex flex-col items-center"><div class="w-full h-0.5 bg-slate-600 relative"><i class="fa-solid fa-plane absolute text-slate-300 text-xs left-1/2 -top-1.5 -ml-1.5 transform rotate-45"></i></div><div class="text-[10px] text-slate-400 mt-1">8人搭乘</div></div>
+                                <div class="text-center"><div class="text-2xl font-mono-display font-bold">15:20</div><div class="text-[10px] text-slate-400">TPE</div></div>
+                            </div>
+                            <div class="text-right mt-3">
+                                <a href="https://tw.trip.com/actualtime/detail.html?flightNo=BR868&departCity=HKG&arriveCity=TPE&date=2026-07-22&locale=zh-TW" target="_blank" class="text-[10px] text-blue-300 hover:text-white transition border border-blue-500/50 hover:bg-blue-600/50 px-2 py-1 rounded inline-flex items-center">
+                                    Trip.com 航班動態 <i class="fa-solid fa-arrow-up-right-from-square ml-1"></i>
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="flight-row p-4 relative filterable-item multi-group" data-groups="A,B,C">
+                            <div class="flex justify-between items-start mb-3">
+                                <div class="flex items-center flex-wrap gap-1">
+                                    <span class="text-[10px] font-bold bg-emerald-600 text-white px-2 py-0.5 rounded">全員合體</span>
+                                    <span class="font-mono-display text-xl text-yellow-400 tracking-wider ml-1">BR178</span>
+                                </div>
+                                <div class="text-[10px] text-slate-500 font-mono-display">7/23 (THU)</div>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <div class="text-center"><div class="text-2xl font-mono-display font-bold">06:30</div><div class="text-[10px] text-slate-400">TPE</div></div>
+                                <div class="flex-1 px-4 flex flex-col items-center"><div class="w-full h-0.5 bg-slate-600 relative"><i class="fa-solid fa-plane absolute text-slate-300 text-xs left-1/2 -top-1.5 -ml-1.5 transform rotate-45"></i></div><div class="text-[10px] text-slate-400 mt-1">11人搭乘</div></div>
+                                <div class="text-center"><div class="text-2xl font-mono-display font-bold">10:10</div><div class="text-[10px] text-slate-400">KIX</div></div>
+                            </div>
+                            <div class="text-right mt-3">
+                                <a href="https://tw.trip.com/actualtime/detail.html?flightNo=BR178&departCity=TPE&arriveCity=KIX&date=2026-07-23&locale=zh-TW" target="_blank" class="text-[10px] text-emerald-300 hover:text-white transition border border-emerald-500/50 hover:bg-emerald-600/50 px-2 py-1 rounded inline-flex items-center">
+                                    Trip.com 航班動態 <i class="fa-solid fa-arrow-up-right-from-square ml-1"></i>
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="flight-row p-4 relative filterable-item multi-group" data-groups="B,C">
+                            <div class="flex justify-between items-start mb-3">
+                                <div class="flex items-center flex-wrap gap-1">
+                                    <span class="text-[10px] font-bold bg-orange-500 text-white px-2 py-0.5 rounded">B, C 第一批回程</span>
+                                    <span class="font-mono-display text-xl text-yellow-400 tracking-wider ml-1">BR129</span>
+                                </div>
+                                <div class="text-[10px] text-slate-500 font-mono-display">7/27 (MON)</div>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <div class="text-center"><div class="text-2xl font-mono-display font-bold">18:30</div><div class="text-[10px] text-slate-400">KIX</div></div>
+                                <div class="flex-1 px-4 flex flex-col items-center"><div class="w-full h-0.5 bg-slate-600 relative"><i class="fa-solid fa-plane absolute text-slate-300 text-xs left-1/2 -top-1.5 -ml-1.5 transform rotate-45"></i></div><div class="text-[10px] text-slate-400 mt-1">7人搭乘</div></div>
+                                <div class="text-center"><div class="text-2xl font-mono-display font-bold">20:30</div><div class="text-[10px] text-slate-400">TPE</div></div>
+                            </div>
+                            <div class="text-right mt-3">
+                                <a href="https://tw.trip.com/actualtime/detail.html?flightNo=BR129&departCity=KIX&arriveCity=TPE&date=2026-07-27&locale=zh-TW" target="_blank" class="text-[10px] text-orange-300 hover:text-white transition border border-orange-500/50 hover:bg-orange-600/50 px-2 py-1 rounded inline-flex items-center">
+                                    Trip.com 航班動態 <i class="fa-solid fa-arrow-up-right-from-square ml-1"></i>
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="flight-row p-4 relative filterable-item" data-group="A">
+                            <div class="flex justify-between items-start mb-3">
+                                <div class="flex items-center flex-wrap gap-1">
+                                    <span class="text-[10px] font-bold bg-slate-600 text-white px-2 py-0.5 rounded">A 組第二批回程</span>
+                                    <span class="font-mono-display text-xl text-yellow-400 tracking-wider ml-1">BR129</span>
+                                </div>
+                                <div class="text-[10px] text-slate-500 font-mono-display">7/30 (THU)</div>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <div class="text-center"><div class="text-2xl font-mono-display font-bold">18:30</div><div class="text-[10px] text-slate-400">KIX</div></div>
+                                <div class="flex-1 px-4 flex flex-col items-center"><div class="w-full h-0.5 bg-slate-600 relative"><i class="fa-solid fa-plane absolute text-slate-300 text-xs left-1/2 -top-1.5 -ml-1.5 transform rotate-45"></i></div><div class="text-[10px] text-slate-400 mt-1">4人搭乘</div></div>
+                                <div class="text-center"><div class="text-2xl font-mono-display font-bold">20:30</div><div class="text-[10px] text-slate-400">TPE</div></div>
+                            </div>
+                            <div class="text-right mt-3">
+                                <a href="https://tw.trip.com/actualtime/detail.html?flightNo=BR129&departCity=KIX&arriveCity=TPE&date=2026-07-30&locale=zh-TW" target="_blank" class="text-[10px] text-slate-300 hover:text-white transition border border-slate-500/50 hover:bg-slate-600/50 px-2 py-1 rounded inline-flex items-center">
+                                    Trip.com 航班動態 <i class="fa-solid fa-arrow-up-right-from-square ml-1"></i>
+                                </a>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- 住宿分頁 -->
+            <div id="tab-hotels" class="tab-content space-y-4">
+                <div class="bg-white rounded-2xl p-5 shadow-sm">
+                    <h2 class="text-lg font-bold mb-4 text-slate-800 flex items-center">
+                        <i class="fa-solid fa-hotel mr-2 text-indigo-500"></i> 住宿清單
+                    </h2>
+                    <div class="space-y-4">
+                        
+                        <!-- 香港 YMCA -->
+                        <div class="bg-orange-50 p-4 rounded-xl border border-orange-100 relative filterable-item multi-group" data-groups="A,B">
+                            <div class="absolute top-4 right-4 text-[10px] font-bold bg-orange-100 text-orange-600 px-2 py-1 rounded">3 晚</div>
+                            <h3 class="font-bold text-slate-800 pr-16 text-sm">香港基督教青年會 (港青)</h3>
+                            <p class="text-[10px] text-slate-500 mt-1">The Salisbury - YMCA of Hong Kong</p>
+                            <p class="text-xs mt-2 text-slate-600 font-bold"><i class="fa-regular fa-calendar mr-1"></i> 7/19 (日) ~ 7/22 (三)</p>
+                            <div class="mt-2 space-y-1">
+                                <div class="bg-white px-2 py-1.5 rounded text-xs border border-orange-100 flex justify-between">
+                                    <span class="text-slate-600">半海景房 (HUANG WEICHIEH)</span>
+                                </div>
+                                <div class="bg-white px-2 py-1.5 rounded text-xs border border-orange-100 flex justify-between">
+                                    <span class="text-slate-600">半海景房 (HUANG WEICHIEH)</span>
+                                </div>
+                                <div class="bg-white px-2 py-1.5 rounded text-xs border border-orange-100 flex justify-between">
+                                    <span class="text-slate-600">標準房 (Huang Wei Chieh)</span>
+                                </div>
+                                <div class="bg-white px-2 py-1.5 rounded text-xs border border-orange-100 flex justify-between">
+                                    <span class="text-slate-600">標準房 (Huang Wei Chieh)</span>
+                                </div>
+                            </div>
+                            <a href="https://www.google.com/maps/search/?api=1&query=The+Salisbury+-+YMCA+of+Hong+Kong" target="_blank" class="mt-3 block w-full bg-orange-500 text-white text-xs font-bold py-2 rounded text-center shadow-md active:bg-orange-600 transition">
+                                <i class="fa-solid fa-location-dot mr-1"></i> 導航至飯店
+                            </a>
+                        </div>
+
+                        <!-- 大阪 環球影城東方飯店 -->
+                        <div class="bg-blue-50 p-4 rounded-xl border border-blue-100 relative filterable-item multi-group" data-groups="A,B,C">
+                            <div class="absolute top-4 right-4 text-[10px] font-bold bg-blue-200 text-blue-700 px-2 py-1 rounded">2 晚</div>
+                            <h3 class="font-bold text-slate-800 pr-16 text-sm">環球影城東方飯店</h3>
+                            <p class="text-[10px] text-slate-500 mt-1">Oriental Hotel Universal City</p>
+                            <p class="text-xs mt-2 text-slate-600 font-bold"><i class="fa-regular fa-calendar mr-1"></i> 7/23 (四) ~ 7/25 (六)</p>
+                            <div class="mt-2 space-y-1">
+                                <div class="bg-white px-2 py-1.5 rounded text-[11px] border border-blue-100 flex justify-between items-center">
+                                    <span class="text-slate-600">家庭連通房 (CHEN YUNGCHIEH)</span>
+                                    <span class="text-blue-500 font-bold">含早</span>
+                                </div>
+                                <div class="bg-white px-2 py-1.5 rounded text-[11px] border border-blue-100 flex justify-between items-center">
+                                    <span class="text-slate-600">豪華三人房 (WEICHIEH HUANG)</span>
+                                    <span class="text-blue-500 font-bold">含早</span>
+                                </div>
+                                <div class="bg-white px-2 py-1.5 rounded text-[11px] border border-blue-100 flex justify-between items-center">
+                                    <span class="text-slate-600">高級雙床房 (MINGCHUAN HSU)</span>
+                                    <span class="text-blue-500 font-bold">含早</span>
+                                </div>
+                            </div>
+                            <a href="https://www.google.com/maps/search/?api=1&query=Oriental+Hotel+Universal+City" target="_blank" class="mt-3 block w-full bg-blue-600 text-white text-xs font-bold py-2 rounded text-center shadow-md active:bg-blue-700 transition">
+                                <i class="fa-solid fa-location-dot mr-1"></i> 導航至飯店
+                            </a>
+                        </div>
+
+                        <!-- 大阪 心齋橋橋樑飯店 -->
+                        <div class="bg-purple-50 p-4 rounded-xl border border-purple-100 relative filterable-item multi-group" data-groups="A,B,C">
+                            <div class="absolute top-4 right-4 text-[10px] font-bold bg-purple-200 text-purple-700 px-2 py-1 rounded">2 晚</div>
+                            <h3 class="font-bold text-slate-800 pr-16 text-sm">大阪心齋橋橋樑飯店</h3>
+                            <p class="text-[10px] text-slate-500 mt-1">The Bridge Hotel Shinsaibashi</p>
+                            <p class="text-xs mt-2 text-slate-600 font-bold"><i class="fa-regular fa-calendar mr-1"></i> 7/25 (六) ~ 7/27 (一)</p>
+                            <div class="text-[10px] text-purple-600 mt-1 mb-2 font-bold flex flex-wrap gap-1">
+                                <span class="bg-purple-100 border border-purple-200 px-1.5 py-0.5 rounded">含拉麵宵夜</span>
+                                <span class="bg-purple-100 border border-purple-200 px-1.5 py-0.5 rounded">酒水暢飲</span>
+                            </div>
+                            <div class="space-y-1">
+                                <div class="bg-white px-2 py-1.5 rounded text-[11px] border border-purple-100 flex justify-between items-center">
+                                    <span class="text-slate-600">四人房 (HUANG WEICHIEH)</span>
+                                    <span class="text-purple-500 font-bold">含早</span>
+                                </div>
+                                <div class="bg-white px-2 py-1.5 rounded text-[11px] border border-purple-100 flex justify-between items-center">
+                                    <span class="text-slate-600">豪華房 (FANGYU CHIN)</span>
+                                    <span class="text-purple-500 font-bold">含早</span>
+                                </div>
+                                <div class="bg-white px-2 py-1.5 rounded text-[11px] border border-purple-100 flex justify-between items-center">
+                                    <span class="text-slate-600">雙人房 (YUNGCHIEH CHEN)</span>
+                                    <span class="text-purple-500 font-bold">含早</span>
+                                </div>
+                                <div class="bg-white px-2 py-1.5 rounded text-[11px] border border-purple-100 flex justify-between items-center">
+                                    <span class="text-slate-600">雙人房 (HSU MINGCHUAN)</span>
+                                    <span class="text-purple-500 font-bold">含早</span>
+                                </div>
+                            </div>
+                            <a href="https://www.google.com/maps/search/?api=1&query=The+Bridge+Hotel+Shinsaibashi" target="_blank" class="mt-3 block w-full bg-purple-600 text-white text-xs font-bold py-2 rounded text-center shadow-md active:bg-purple-700 transition">
+                                <i class="fa-solid fa-location-dot mr-1"></i> 導航至飯店
+                            </a>
+                        </div>
+
+                        <!-- 京都 京都塔飯店分館 -->
+                        <div class="bg-teal-50 p-4 rounded-xl border border-teal-100 relative filterable-item" data-group="A">
+                            <div class="absolute top-4 right-4 text-[10px] font-bold bg-teal-200 text-teal-700 px-2 py-1 rounded">3 晚</div>
+                            <h3 class="font-bold text-slate-800 pr-16 text-sm">京都塔飯店分館</h3>
+                            <p class="text-[10px] text-slate-500 mt-1">Kyoto Tower Hotel Annex</p>
+                            <p class="text-xs mt-2 text-slate-600 font-bold"><i class="fa-regular fa-calendar mr-1"></i> 7/27 (一) ~ 7/30 (四)</p>
+                            <div class="mt-2 space-y-1">
+                                <div class="bg-white px-2 py-1.5 rounded text-[11px] border border-teal-100 flex justify-between items-center">
+                                    <span class="text-slate-600">標準雙床房 (HUANG WEICHIEH)</span>
+                                    <span class="text-teal-600 font-bold">含早</span>
+                                </div>
+                                <div class="bg-white px-2 py-1.5 rounded text-[11px] border border-teal-100 flex justify-between items-center">
+                                    <span class="text-slate-600">標準雙床房 (HSU MINGCHUAN)</span>
+                                    <span class="text-teal-600 font-bold">含早</span>
+                                </div>
+                            </div>
+                            <a href="https://www.google.com/maps/search/?api=1&query=Kyoto+Tower+Hotel+Annex" target="_blank" class="mt-3 block w-full bg-teal-600 text-white text-xs font-bold py-2 rounded text-center shadow-md active:bg-teal-700 transition">
+                                <i class="fa-solid fa-location-dot mr-1"></i> 導航至飯店
+                            </a>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div id="tab-info" class="tab-content space-y-4">
+                <div class="bg-white rounded-2xl p-5 shadow-sm">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-lg font-bold flex items-center text-slate-800">
+                            <i class="fa-solid fa-cloud-sun mr-2 text-sky-500"></i> 旅程天氣預報
+                        </h2>
+                        <span id="forecast-status" class="text-[10px] bg-slate-100 text-slate-500 px-2 py-1 rounded-full">歷史均溫</span>
+                    </div>
+                    <div class="flex overflow-x-auto space-x-3 pb-2 no-scrollbar" id="weather-container">
+                        <div class="w-full text-center py-4 text-slate-400 text-sm">載入中...</div>
+                    </div>
+                </div>
+
+                <!-- 新增：專屬 AI 助手連結區塊 (拍立解) -->
+                <div class="bg-gradient-to-r from-indigo-500 to-purple-600 rounded-2xl p-5 shadow-md text-white">
+                    <div class="flex justify-between items-center mb-3">
+                        <h2 class="text-lg font-bold flex items-center">
+                            <i class="fa-solid fa-camera mr-2"></i> AI 拍立解
+                        </h2>
+                        <a href="https://jay870122.github.io/AI-" target="_blank" class="bg-white text-indigo-600 px-4 py-2 rounded-full text-xs font-bold shadow-sm hover:bg-indigo-50 transition active:scale-95 flex-shrink-0">
+                            立刻使用 <i class="fa-solid fa-arrow-right ml-1"></i>
+                        </a>
+                    </div>
+                    <div class="text-xs text-indigo-100 space-y-1">
+                        <p>看不懂日文/英文包裝？不知道成分或熱量？</p>
+                        <p class="font-bold text-yellow-300">📸 拍張照，AI 立刻幫你翻譯＋解說！</p>
+                    </div>
+                </div>
+                
+                <!-- 新增：行李與託運規定 -->
+                <div class="bg-slate-800 text-white rounded-2xl p-5 shadow-lg">
+                    <h2 class="text-lg font-bold mb-4 flex items-center">
+                        <i class="fa-solid fa-suitcase-rolling mr-2 text-yellow-400"></i> 行李額度 & 託運規定
+                    </h2>
+                    
+                    <div class="space-y-4 text-sm">
+                        <!-- 額度區塊 -->
+                        <div class="bg-slate-700/50 p-3 rounded-xl border border-slate-600">
+                            <div class="font-bold text-blue-300 mb-2 border-b border-slate-600 pb-1"><i class="fa-solid fa-scale-unbalanced mr-1"></i> 長榮航空額度 (每人)</div>
+                            <ul class="space-y-2 text-slate-200">
+                                <li class="flex items-start">
+                                    <i class="fa-solid fa-bag-shopping mt-1 mr-2 w-4 text-center text-slate-400"></i>
+                                    <div><span class="font-bold text-white">手提登機：</span>1 件，上限 7 公斤<br><span class="text-[10px] text-slate-400">尺寸不超過 56x36x23 公分</span></div>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fa-solid fa-suitcase mt-1 mr-2 w-4 text-center text-slate-400"></i>
+                                    <div><span class="font-bold text-white">託運行李：</span>1 件，上限 23 公斤<br><span class="text-[10px] text-slate-400">請勿超重以免衍生超重費</span></div>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- 禁運地雷區塊 -->
+                        <div class="bg-red-900/30 p-3 rounded-xl border border-red-800/50">
+                            <div class="font-bold text-red-400 mb-2 border-b border-red-800/50 pb-1"><i class="fa-solid fa-ban mr-1"></i> 絕對不可放「託運」的物品</div>
+                            <p class="text-xs text-slate-300 mb-2 leading-relaxed">以下物品<span class="text-red-300 font-bold">必須隨身攜帶上飛機</span>，若放進託運行李被安檢驗出，將會被開箱重檢甚至沒收：</p>
+                            <ul class="grid grid-cols-2 gap-2 text-xs text-white">
+                                <li class="bg-red-800/40 p-2 rounded flex items-center"><i class="fa-solid fa-battery-full text-red-400 mr-2 w-4 text-center"></i> 行動電源</li>
+                                <li class="bg-red-800/40 p-2 rounded flex items-center"><i class="fa-solid fa-car-battery text-red-400 mr-2 w-4 text-center"></i> 備用鋰電池</li>
+                                <li class="bg-red-800/40 p-2 rounded flex items-center"><i class="fa-solid fa-fire text-red-400 mr-2 w-4 text-center"></i> 打火機 (限1個)</li>
+                                <li class="bg-red-800/40 p-2 rounded flex items-center"><i class="fa-solid fa-smoking text-red-400 mr-2 w-4 text-center"></i> 電子菸</li>
+                            </ul>
+                        </div>
+
+                        <!-- 只能託運，不可手提區塊 -->
+                        <div class="bg-orange-900/30 p-3 rounded-xl border border-orange-800/50">
+                            <div class="font-bold text-orange-400 mb-2 border-b border-orange-800/50 pb-1"><i class="fa-solid fa-scissors mr-1"></i> 只能「託運」，不可手提登機</div>
+                            <p class="text-xs text-slate-300 mb-2 leading-relaxed">以下物品<span class="text-orange-300 font-bold">嚴禁隨身帶上飛機</span>，安檢抓到會直接被迫丟棄，請務必打包在大行李箱：</p>
+                            <ul class="grid grid-cols-2 gap-2 text-xs text-white">
+                                <li class="bg-orange-800/40 p-2 rounded flex items-center"><i class="fa-solid fa-bottle-droplet text-orange-400 mr-2 w-4 text-center"></i> <span class="leading-tight">大容量液體<br><span class="text-[9px] text-orange-200">單瓶超過100ml</span></span></li>
+                                <li class="bg-orange-800/40 p-2 rounded flex items-center"><i class="fa-solid fa-scissors text-orange-400 mr-2 w-4 text-center"></i> <span class="leading-tight">剪刀刀具<br><span class="text-[9px] text-orange-200">指甲剪/美工刀</span></span></li>
+                                <li class="bg-orange-800/40 p-2 rounded flex items-center"><i class="fa-solid fa-hammer text-orange-400 mr-2 w-4 text-center"></i> <span class="leading-tight">長棍工具<br><span class="text-[9px] text-orange-200">腳架/自拍桿等</span></span></li>
+                                <li class="bg-orange-800/40 p-2 rounded flex items-center"><i class="fa-solid fa-spray-can text-orange-400 mr-2 w-4 text-center"></i> <span class="leading-tight">壓縮噴霧<br><span class="text-[9px] text-orange-200">防曬/定型液</span></span></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </main>
+
+    <nav class="bg-white border-t border-slate-200 fixed bottom-0 w-full z-50 pb-safe">
+        <div class="relative flex justify-around items-center h-16 max-w-3xl mx-auto">
+            <div id="nav-indicator" class="nav-indicator"></div>
+            <button onclick="switchTab('itinerary', 0)" class="nav-item active flex-1 flex flex-col items-center justify-center h-full text-slate-400">
+                <i class="fa-solid fa-list-check text-xl mb-1"></i><span class="text-[10px] font-bold">行程</span>
+            </button>
+            <button onclick="switchTab('flights', 1)" class="nav-item flex-1 flex flex-col items-center justify-center h-full text-slate-400">
+                <i class="fa-solid fa-plane text-xl mb-1"></i><span class="text-[10px] font-bold">航班</span>
+            </button>
+            <button onclick="switchTab('hotels', 2)" class="nav-item flex-1 flex flex-col items-center justify-center h-full text-slate-400">
+                <i class="fa-solid fa-bed text-xl mb-1"></i><span class="text-[10px] font-bold">住宿</span>
+            </button>
+            <button onclick="switchTab('info', 3)" class="nav-item flex-1 flex flex-col items-center justify-center h-full text-slate-400">
+                <i class="fa-solid fa-suitcase text-xl mb-1"></i><span class="text-[10px] font-bold">準備</span>
+            </button>
+        </div>
+    </nav>
+
+<script>
+    let currentFilterGroup = 'ALL';
+    
+    function filterGroup(group) {
+        currentFilterGroup = group;
+        const items = document.querySelectorAll('.filterable-item');
+        const btns = document.querySelectorAll('.filter-btn');
+        
+        btns.forEach(btn => {
+            btn.classList.remove('bg-slate-100', 'shadow-sm', 'text-slate-800');
+            btn.classList.add('text-slate-500', 'hover:bg-slate-50');
+        });
+        
+        const activeBtnId = 'btn-' + group.toLowerCase();
+        const activeBtn = document.getElementById(activeBtnId);
+        if(activeBtn) {
+            activeBtn.classList.add('bg-slate-100', 'shadow-sm', 'text-slate-800');
+            activeBtn.classList.remove('text-slate-500', 'hover:bg-slate-50');
+        }
+
+        const headerDate = document.getElementById('header-date');
+        const dateTexts = {
+            'ALL': '7/19 (日) ~ 7/30 (四)｜共 12 天',
+            'A': '7/19 (日) ~ 7/30 (四)｜共 12 天',
+            'B': '7/19 (日) ~ 7/27 (一)｜共 9 天',
+            'C': '7/23 (四) ~ 7/27 (一)｜共 5 天'
+        };
+        if(headerDate && dateTexts[group]) {
+            headerDate.innerText = dateTexts[group];
+        }
+
+        items.forEach(item => {
+            const itemGroup = item.getAttribute('data-group');
+            const multiGroups = item.getAttribute('data-groups'); 
+            let isVisible = false;
+
+            if (group === 'ALL') {
+                isVisible = true;
+            } else {
+                if (!itemGroup && !multiGroups) {
+                    isVisible = true;
+                } else if (itemGroup === group) {
+                    isVisible = true;
+                } else if (multiGroups && multiGroups.includes(group)) {
+                    isVisible = true;
+                }
+            }
+
+            if (isVisible) {
+                item.classList.remove('hidden-item');
+            } else {
+                item.classList.add('hidden-item');
+            }
+        });
+
+        updateTimelineLabels();
+    }
+
+    function updateTimelineLabels() {
+        const dots = document.querySelectorAll('#tab-itinerary .timeline-dot');
+        let count = 1;
+        dots.forEach(dot => {
+            const parent = dot.closest('.filterable-item');
+            if (parent && !parent.classList.contains('hidden-item')) {
+                dot.textContent = `D${count}`;
+                count++;
+            }
+        });
+    }
+
+    function switchTab(tabId, index) {
+        document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+        document.getElementById(`tab-${tabId}`).classList.add('active');
+        document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.nav-item')[index].classList.add('active');
+
+        const indicator = document.getElementById('nav-indicator');
+        indicator.style.left = `${index * 25}%`;
+        document.getElementById('main-scroll').scrollTop = 0;
+    }
+
+    const weatherCodes = {
+        0: { text: "晴天", icon: "fa-sun", color: "text-orange-500" },
+        1: { text: "多雲", icon: "fa-cloud-sun", color: "text-orange-400" },
+        2: { text: "多雲", icon: "fa-cloud", color: "text-slate-400" },
+        3: { text: "陰天", icon: "fa-cloud", color: "text-slate-500" },
+        51: { text: "小雨", icon: "fa-cloud-rain", color: "text-blue-400" },
+        61: { text: "下雨", icon: "fa-cloud-showers-heavy", color: "text-blue-600" }
+    };
+    
+    const tripDates = [
+        { date: '2026-07-19', label: '7/19', day: 'D1', loc: 'HKG', name: '香港', lat: 22.30, long: 113.91, histLow: 28, histHigh: 32, histCode: 1, groups: 'A,B' },
+        { date: '2026-07-20', label: '7/20', day: 'D2', loc: 'HKG', name: '香港', lat: 22.30, long: 113.91, histLow: 28, histHigh: 32, histCode: 0, groups: 'A,B' },
+        { date: '2026-07-21', label: '7/21', day: 'D3', loc: 'HKG', name: '香港', lat: 22.30, long: 113.91, histLow: 28, histHigh: 32, histCode: 1, groups: 'A,B' },
+        { date: '2026-07-22', label: '7/22', day: 'D4', loc: 'HKG', name: '香港', lat: 22.30, long: 113.91, histLow: 28, histHigh: 33, histCode: 2, groups: 'A,B' },
+        { date: '2026-07-23', label: '7/23', day: 'D5', loc: 'KIX', name: '大阪', lat: 34.69, long: 135.50, histLow: 26, histHigh: 34, histCode: 1, groups: 'A,B,C' },
+        { date: '2026-07-24', label: '7/24', day: 'D6', loc: 'KIX', name: '大阪', lat: 34.69, long: 135.50, histLow: 26, histHigh: 34, histCode: 0, groups: 'A,B,C' },
+        { date: '2026-07-25', label: '7/25', day: 'D7', loc: 'KIX', name: '大阪', lat: 34.69, long: 135.50, histLow: 26, histHigh: 34, histCode: 1, groups: 'A,B,C' },
+        { date: '2026-07-26', label: '7/26', day: 'D8', loc: 'NARA', name: '奈良', lat: 34.68, long: 135.80, histLow: 25, histHigh: 33, histCode: 0, groups: 'A,B,C' },
+        { date: '2026-07-27', label: '7/27', day: 'D9', loc: 'KIX', name: '大阪', lat: 34.69, long: 135.50, histLow: 26, histHigh: 34, histCode: 0, groups: 'A,B,C' },
+        { date: '2026-07-30', label: '7/30', day: 'D12', loc: 'KYO', name: '京都', lat: 35.01, long: 135.76, histLow: 25, histHigh: 34, histCode: 1, groups: 'A' }
+    ];
+
+    async function initWeather() {
+        const container = document.getElementById('weather-container');
+        const statusLabel = document.getElementById('forecast-status');
+        container.innerHTML = '';
+
+        for (const item of tripDates) {
+            let low = item.histLow;
+            let high = item.histHigh;
+            let code = item.histCode;
+
+            const weatherInfo = weatherCodes[code] || { text: "未知", icon: "fa-question", color: "text-slate-400" };
+            const borderColor = item.loc === 'HKG' ? 'border-orange-200 bg-orange-50' : (item.loc === 'KYO' ? 'border-teal-200 bg-teal-50' : (item.loc === 'NARA' ? 'border-green-200 bg-green-50' : 'border-blue-100 bg-blue-50'));
+            const card = document.createElement('div');
+            
+            card.className = `flex-none w-28 p-3 rounded-xl border ${borderColor} flex flex-col items-center justify-between snap-center weather-card filterable-item`;
+            card.setAttribute('data-groups', item.groups);
+
+            card.innerHTML = `
+                <div class="text-xs font-bold text-slate-500">${item.label}</div>
+                <div class="font-bold text-sm text-slate-700 my-1">${item.name}</div>
+                <div class="text-2xl ${weatherInfo.color} my-1"><i class="fa-solid ${weatherInfo.icon}"></i></div>
+                <div class="text-xs font-medium text-slate-600">${low}° ~ ${high}°</div>
+            `;
+            container.appendChild(card);
+        }
+        
+        filterGroup(currentFilterGroup);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        initWeather();
+        filterGroup('ALL');
+    });
+</script>
+</body>
+</html>
