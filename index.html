@@ -64,6 +64,13 @@
                 display: none !important; 
             }
 
+            /* 修正動畫導致列印空白的問題 (強制解除 Opacity 與過場動畫) */
+            .tab-content {
+                animation: none !important;
+                opacity: 1 !important;
+                transition: none !important;
+            }
+
             /* 強制印出背景顏色 (確保標籤、時間軸等顏色正常顯示) */
             * {
                 -webkit-print-color-adjust: exact !important;
@@ -191,7 +198,7 @@
                     <button onclick="printNormal()" class="hover:bg-white/30 px-2 py-1 text-[11px] transition border-r border-white/20 flex items-center gap-1" title="列印目前單頁">
                         <i class="fa-solid fa-file-lines"></i><span class="hidden sm:inline">單頁</span>
                     </button>
-                    <button onclick="printBook()" class="hover:bg-white/30 px-2 py-1 text-[11px] transition flex items-center gap-1" title="印製完整手冊 (雙面)">
+                    <button onclick="showPrintModal()" class="hover:bg-white/30 px-2 py-1 text-[11px] transition flex items-center gap-1" title="印製完整手冊 (雙面)">
                         <i class="fa-solid fa-book"></i><span class="hidden sm:inline">成冊</span>
                     </button>
                 </div>
@@ -788,6 +795,45 @@
         </div>
     </main>
 
+    <!-- 列印選擇 Modal (解決您想要完美隔絕各組資訊的需求) -->
+    <div id="print-modal" class="fixed inset-0 bg-slate-900/60 z-[100] flex items-center justify-center hidden opacity-0 transition-opacity duration-300">
+        <div class="bg-white rounded-2xl shadow-2xl p-6 w-11/12 max-w-sm transform scale-95 transition-transform duration-300" id="print-modal-content">
+            <h3 class="text-lg font-bold text-slate-800 mb-3 flex items-center"><i class="fa-solid fa-book-open text-blue-500 mr-2"></i>印製專屬手冊</h3>
+            <p class="text-xs text-slate-500 mb-4 leading-relaxed">請選擇要產生的版本，系統會自動切換並隱藏其他組別的資訊，打造該組的專屬手冊：</p>
+            <div class="space-y-2">
+                <button onclick="executePrintBook('ALL')" class="w-full text-left px-4 py-3 rounded-xl border border-slate-200 hover:bg-slate-50 hover:border-slate-400 transition flex items-center justify-between group">
+                    <div>
+                        <div class="font-bold text-slate-700">全員總覽版</div>
+                        <div class="text-[10px] text-slate-400 mt-0.5">保留所有組別行程與標籤</div>
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-slate-300 group-hover:text-slate-500 transition"></i>
+                </button>
+                <button onclick="executePrintBook('A')" class="w-full text-left px-4 py-3 rounded-xl border border-slate-200 hover:bg-blue-50 hover:border-blue-400 transition flex items-center justify-between group">
+                    <div>
+                        <div class="font-bold text-blue-700 flex items-center"><span class="bg-blue-500 text-white px-1.5 py-0.5 rounded text-[10px] mr-1.5">A組</span>專屬手冊</div>
+                        <div class="text-[10px] text-slate-500 mt-0.5">港日 12 天行程</div>
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-slate-300 group-hover:text-blue-500 transition"></i>
+                </button>
+                <button onclick="executePrintBook('B')" class="w-full text-left px-4 py-3 rounded-xl border border-slate-200 hover:bg-emerald-50 hover:border-emerald-400 transition flex items-center justify-between group">
+                    <div>
+                        <div class="font-bold text-emerald-700 flex items-center"><span class="bg-emerald-500 text-white px-1.5 py-0.5 rounded text-[10px] mr-1.5">B組</span>專屬手冊</div>
+                        <div class="text-[10px] text-slate-500 mt-0.5">港日 9 天行程</div>
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-slate-300 group-hover:text-emerald-500 transition"></i>
+                </button>
+                <button onclick="executePrintBook('C')" class="w-full text-left px-4 py-3 rounded-xl border border-slate-200 hover:bg-orange-50 hover:border-orange-400 transition flex items-center justify-between group">
+                    <div>
+                        <div class="font-bold text-orange-700 flex items-center"><span class="bg-orange-500 text-white px-1.5 py-0.5 rounded text-[10px] mr-1.5">C組</span>專屬手冊</div>
+                        <div class="text-[10px] text-slate-500 mt-0.5">純關西 5 天行程</div>
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-slate-300 group-hover:text-orange-500 transition"></i>
+                </button>
+            </div>
+            <button onclick="closePrintModal()" class="mt-4 w-full py-2.5 bg-slate-100 rounded-xl text-center text-sm font-bold text-slate-500 hover:bg-slate-200 hover:text-slate-700 transition">取消</button>
+        </div>
+    </div>
+
     <nav class="bg-white border-t border-slate-200 fixed bottom-0 w-full z-50 pb-safe">
         <div class="relative flex justify-around items-center h-16 max-w-3xl mx-auto">
             <div id="nav-indicator" class="nav-indicator"></div>
@@ -839,7 +885,7 @@
             headerDate.innerText = dateTexts[group];
         }
 
-        // 更新動態文字內容 (將含有他組資訊的文字隱藏)
+        // 更新動態文字內容 (將含有他組資訊的文字隱藏/替換)
         dynamicTexts.forEach(el => {
             const attr = 'data-' + group.toLowerCase();
             if (el.hasAttribute(attr)) {
@@ -900,22 +946,48 @@
         document.getElementById('main-scroll').scrollTop = 0;
     }
 
-    // ==== 新增：動態列印功能 ====
+    // ==== 列印功能區 ====
     function printNormal() {
         document.body.classList.remove('print-book');
         document.body.classList.add('print-normal');
         
         let style = document.getElementById('book-print-style');
-        if (style) style.remove(); // 確保不會套用到雙面留白的樣式
+        if (style) style.remove(); 
         
         window.print();
     }
 
-    function printBook() {
+    // 顯示列印選單
+    function showPrintModal() {
+        const modal = document.getElementById('print-modal');
+        const content = document.getElementById('print-modal-content');
+        modal.classList.remove('hidden');
+        void modal.offsetWidth; // 觸發重繪
+        modal.classList.remove('opacity-0');
+        content.classList.remove('scale-95');
+    }
+
+    // 關閉列印選單
+    function closePrintModal() {
+        const modal = document.getElementById('print-modal');
+        const content = document.getElementById('print-modal-content');
+        modal.classList.add('opacity-0');
+        content.classList.add('scale-95');
+        setTimeout(() => {
+            modal.classList.add('hidden');
+        }, 300);
+    }
+
+    // 執行選擇的版本成冊列印
+    function executePrintBook(group) {
+        // 先自動切換到目標組別，替換掉所有該隱藏的文字
+        filterGroup(group);
+        closePrintModal();
+        
         document.body.classList.remove('print-normal');
         document.body.classList.add('print-book');
         
-        // 動態插入成冊用的雙面邊距 (@page)
+        // 加入裝訂邊的樣式
         let style = document.getElementById('book-print-style');
         if (!style) {
             style = document.createElement('style');
@@ -930,7 +1002,10 @@
             document.head.appendChild(style);
         }
         
-        window.print();
+        // 給予畫面 400 毫秒的時間去重置動畫與替換文字，確保不會印出空白頁
+        setTimeout(() => {
+            window.print();
+        }, 400);
     }
 
     const weatherCodes = {
@@ -981,12 +1056,20 @@
             container.appendChild(card);
         }
         
-        filterGroup(currentFilterGroup);
+        // 隱藏功能：讀取網址結尾的 ?group=C ，若有則將過濾列完全隱藏，變成單一組別的「專屬私密 APP」
+        const urlParams = new URLSearchParams(window.location.search);
+        const urlGroup = urlParams.get('group');
+        if (urlGroup && ['A', 'B', 'C'].includes(urlGroup.toUpperCase())) {
+            filterGroup(urlGroup.toUpperCase());
+            const filterBar = document.getElementById('filter-bar');
+            if (filterBar) filterBar.style.display = 'none';
+        } else {
+            filterGroup('ALL');
+        }
     }
 
     document.addEventListener('DOMContentLoaded', () => {
         initWeather();
-        filterGroup('ALL');
     });
 </script>
 </body>
