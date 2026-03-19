@@ -46,29 +46,12 @@
         .flight-row { border-bottom: 1px solid #334155; }
         .flight-row:last-child { border-bottom: none; }
 
-        /* ======= 書籍雙面列印專屬樣式 ======= */
+        /* ======= 列印通用樣式 ======= */
         @media print {
-            /* 設定 A4 大小與基礎邊距 */
-            @page {
-                size: A4 portrait;
-                margin: 15mm;
-            }
-            /* 左頁 (雙數頁)：右側留給裝訂邊 */
-            @page :left {
-                margin-left: 15mm;
-                margin-right: 25mm;
-            }
-            /* 右頁 (單數頁)：左側留給裝訂邊 */
-            @page :right {
-                margin-left: 25mm;
-                margin-right: 15mm;
-            }
-
             body, html {
                 height: auto !important;
                 overflow: visible !important;
                 background-color: white !important;
-                font-size: 11pt !important;
             }
             main {
                 height: auto !important;
@@ -77,87 +60,8 @@
             }
             
             /* 隱藏不需要印出的 UI */
-            nav, #print-btn, #filter-bar, #total-people {
+            nav, .print-actions, #filter-bar, #total-people {
                 display: none !important; 
-            }
-
-            /* --- 1. 將 Header 轉換成 A4 滿版的「書籍封面」 --- */
-            header {
-                height: 100vh !important;
-                display: flex !important;
-                flex-direction: column !important;
-                justify-content: center !important;
-                align-items: center !important;
-                text-align: center !important;
-                padding: 0 !important;
-                margin: 0 !important;
-                border-radius: 0 !important;
-                page-break-after: always; /* 印完封面強制換頁 */
-                break-after: page;
-            }
-            header > div {
-                flex-direction: column !important;
-                align-items: center !important;
-            }
-            header h1.dynamic-text {
-                font-size: 3rem !important; /* 放大標題字體 */
-                flex-direction: column !important;
-                margin-bottom: 2rem !important;
-                line-height: 1.3 !important;
-            }
-            header h1 span {
-                font-size: 5rem !important; /* 放大 Icon */
-                margin-right: 0 !important;
-                margin-bottom: 1.5rem !important;
-                display: block;
-            }
-            #header-date {
-                font-size: 1.5rem !important;
-                margin-left: 0 !important;
-                opacity: 0.9;
-            }
-            header::after {
-                content: "專屬旅遊手冊";
-                display: block;
-                margin-top: 4rem;
-                font-size: 1.2rem;
-                letter-spacing: 0.5em;
-                opacity: 0.7;
-                border-top: 1px solid rgba(255,255,255,0.3);
-                padding-top: 1rem;
-            }
-
-            /* --- 2. 展開所有分頁變成章節 --- */
-            .tab-content {
-                display: block !important;
-                page-break-before: always; /* 每個章節獨立一頁 */
-                break-before: page;
-                padding-top: 0.5cm;
-            }
-
-            /* 替行程表加上列印專屬標題 (原本沒有 h2) */
-            #tab-itinerary::before {
-                content: "📋 詳細行程表";
-                display: block;
-                font-size: 1.5rem;
-                font-weight: bold;
-                color: #1e293b;
-                margin-bottom: 1.5rem;
-                padding-bottom: 0.5rem;
-                border-bottom: 2px solid #e2e8f0;
-            }
-
-            /* --- 3. 處理橫向滾動的天氣卡片，讓它自動往下折行 --- */
-            #weather-container {
-                display: flex !important;
-                flex-wrap: wrap !important;
-                gap: 10px !important;
-                overflow: visible !important;
-            }
-            .weather-card {
-                width: calc(25% - 10px) !important; /* 一排顯示四天 */
-                flex: none !important;
-                page-break-inside: avoid;
             }
 
             /* 強制印出背景顏色 (確保標籤、時間軸等顏色正常顯示) */
@@ -177,6 +81,97 @@
                 box-shadow: none !important;
                 border: 1px solid #e2e8f0 !important;
             }
+
+            /* --- 單頁列印 (預設) 模式 --- */
+            body:not(.print-book) .tab-content {
+                display: none !important;
+            }
+            body:not(.print-book) .tab-content.active {
+                display: block !important; 
+            }
+
+            /* --- 書籍列印專屬樣式 --- */
+            body.print-book {
+                font-size: 11pt !important;
+            }
+            /* 將 Header 轉換成 A4 滿版的「書籍封面」 */
+            body.print-book header {
+                height: 100vh !important;
+                display: flex !important;
+                flex-direction: column !important;
+                justify-content: center !important;
+                align-items: center !important;
+                text-align: center !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                border-radius: 0 !important;
+                page-break-after: always; 
+                break-after: page;
+            }
+            body.print-book header > div {
+                flex-direction: column !important;
+                align-items: center !important;
+            }
+            body.print-book header h1.dynamic-text {
+                font-size: 3rem !important; 
+                flex-direction: column !important;
+                margin-bottom: 2rem !important;
+                line-height: 1.3 !important;
+            }
+            body.print-book header h1 span {
+                font-size: 5rem !important; 
+                margin-right: 0 !important;
+                margin-bottom: 1.5rem !important;
+                display: block;
+            }
+            body.print-book #header-date {
+                font-size: 1.5rem !important;
+                margin-left: 0 !important;
+                opacity: 0.9;
+            }
+            body.print-book header::after {
+                content: "專屬旅遊手冊";
+                display: block;
+                margin-top: 4rem;
+                font-size: 1.2rem;
+                letter-spacing: 0.5em;
+                opacity: 0.7;
+                border-top: 1px solid rgba(255,255,255,0.3);
+                padding-top: 1rem;
+            }
+
+            /* 展開所有分頁變成章節 */
+            body.print-book .tab-content {
+                display: block !important;
+                page-break-before: always; 
+                break-before: page;
+                padding-top: 0.5cm;
+            }
+
+            /* 替行程表加上列印專屬標題 */
+            body.print-book #tab-itinerary::before {
+                content: "📋 詳細行程表";
+                display: block;
+                font-size: 1.5rem;
+                font-weight: bold;
+                color: #1e293b;
+                margin-bottom: 1.5rem;
+                padding-bottom: 0.5rem;
+                border-bottom: 2px solid #e2e8f0;
+            }
+
+            /* 處理橫向滾動的天氣卡片，讓它自動往下折行 */
+            body.print-book #weather-container {
+                display: flex !important;
+                flex-wrap: wrap !important;
+                gap: 10px !important;
+                overflow: visible !important;
+            }
+            body.print-book .weather-card {
+                width: calc(25% - 10px) !important; 
+                flex: none !important;
+                page-break-inside: avoid;
+            }
         }
     </style>
 </head>
@@ -190,12 +185,17 @@
                 </h1>
                 <p id="header-date" class="text-blue-100 text-xs mt-0.5 ml-8">7/19 (日) ~ 7/30 (四)｜共 12 天</p>
             </div>
-            <div class="text-right flex items-center gap-2">
-                <!-- 列印按鈕 -->
-                <button id="print-btn" onclick="window.print()" class="bg-white/20 hover:bg-white/30 px-2.5 py-1 rounded text-xs transition shadow-sm active:scale-95" title="列印成冊">
-                    <i class="fa-solid fa-print"></i> 裝訂列印
-                </button>
-                <div id="total-people" class="bg-white/20 px-2 py-1 rounded text-xs">
+            <div class="text-right flex items-center gap-1.5 print-actions">
+                <!-- 列印模式選擇 -->
+                <div class="flex bg-white/20 rounded overflow-hidden shadow-sm">
+                    <button onclick="printNormal()" class="hover:bg-white/30 px-2 py-1 text-[11px] transition border-r border-white/20 flex items-center gap-1" title="列印目前單頁">
+                        <i class="fa-solid fa-file-lines"></i><span class="hidden sm:inline">單頁</span>
+                    </button>
+                    <button onclick="printBook()" class="hover:bg-white/30 px-2 py-1 text-[11px] transition flex items-center gap-1" title="印製完整手冊 (雙面)">
+                        <i class="fa-solid fa-book"></i><span class="hidden sm:inline">成冊</span>
+                    </button>
+                </div>
+                <div id="total-people" class="bg-white/20 px-2 py-1 rounded text-xs hidden md:block">
                     <i class="fa-solid fa-users mr-1"></i><span class="dynamic-text" data-all="11人" data-a="4人" data-b="4人" data-c="3人">11人</span>
                 </div>
             </div>
@@ -898,6 +898,39 @@
         const indicator = document.getElementById('nav-indicator');
         indicator.style.left = `${index * 25}%`;
         document.getElementById('main-scroll').scrollTop = 0;
+    }
+
+    // ==== 新增：動態列印功能 ====
+    function printNormal() {
+        document.body.classList.remove('print-book');
+        document.body.classList.add('print-normal');
+        
+        let style = document.getElementById('book-print-style');
+        if (style) style.remove(); // 確保不會套用到雙面留白的樣式
+        
+        window.print();
+    }
+
+    function printBook() {
+        document.body.classList.remove('print-normal');
+        document.body.classList.add('print-book');
+        
+        // 動態插入成冊用的雙面邊距 (@page)
+        let style = document.getElementById('book-print-style');
+        if (!style) {
+            style = document.createElement('style');
+            style.id = 'book-print-style';
+            style.innerHTML = `
+                @media print {
+                    @page { size: A4 portrait; margin: 15mm; }
+                    @page :left { margin-left: 15mm; margin-right: 25mm; } /* 雙數頁裝訂邊 */
+                    @page :right { margin-left: 25mm; margin-right: 15mm; } /* 單數頁裝訂邊 */
+                }
+            `;
+            document.head.appendChild(style);
+        }
+        
+        window.print();
     }
 
     const weatherCodes = {
