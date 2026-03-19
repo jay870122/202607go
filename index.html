@@ -61,8 +61,9 @@
             nav {
                 display: none !important; /* 隱藏底部導覽列 */
             }
-            #print-btn {
-                display: none !important; /* 隱藏列印按鈕 */
+            /* 隱藏列印按鈕、過濾群組按鈕、總人數 */
+            #print-btn, #filter-bar, #total-people {
+                display: none !important; 
             }
             .tab-content {
                 display: none !important;
@@ -97,7 +98,7 @@
                 <button id="print-btn" onclick="window.print()" class="bg-white/20 hover:bg-white/30 px-2.5 py-1 rounded text-xs transition shadow-sm active:scale-95" title="列印此頁">
                     <i class="fa-solid fa-print"></i>
                 </button>
-                <div class="bg-white/20 px-2 py-1 rounded text-xs">
+                <div id="total-people" class="bg-white/20 px-2 py-1 rounded text-xs">
                     <i class="fa-solid fa-users mr-1"></i>11人
                 </div>
             </div>
@@ -107,7 +108,7 @@
     <main class="flex-1 overflow-y-auto no-scrollbar pb-24 relative" id="main-scroll">
         <div class="max-w-3xl mx-auto p-4 min-h-full">
 
-            <div class="sticky top-0 z-40 bg-slate-100 pb-4 pt-1 mb-2">
+            <div id="filter-bar" class="sticky top-0 z-40 bg-slate-100 pb-4 pt-1 mb-2">
                 <div class="bg-white p-1 rounded-lg shadow-sm border border-slate-200 flex text-xs font-bold text-slate-500 overflow-x-auto no-scrollbar">
                     <button onclick="filterGroup('ALL')" class="filter-btn flex-none py-1.5 px-3 rounded-md transition bg-slate-100 text-slate-800 shadow-sm whitespace-nowrap flex items-center" id="btn-all">
                         <i class="fa-solid fa-users mr-1.5 text-slate-400"></i>全員視角
