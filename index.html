@@ -167,17 +167,94 @@
                 border-bottom: 2px solid #e2e8f0;
             }
 
-            /* 處理橫向滾動的天氣卡片，讓它自動往下折行 */
-            body.print-book #weather-container {
-                display: flex !important;
-                flex-wrap: wrap !important;
-                gap: 10px !important;
-                overflow: visible !important;
+            /* ======= 第四章：行前準備 (Info) 極致壓縮排版 (空白 < 20%) ======= */
+            
+            /* 取消原本針對手機的垂直間距 */
+            #tab-info.space-y-4 > * + * {
+                margin-top: 0 !important;
             }
-            body.print-book .weather-card {
-                width: calc(25% - 10px) !important; 
-                flex: none !important;
-                page-break-inside: avoid;
+            #tab-info {
+                display: flex !important;
+                flex-direction: column !important;
+                gap: 12px !important; /* 緊湊的區塊間距 */
+            }
+            /* 縮小所有主區塊的內距 */
+            #tab-info > div {
+                padding: 12px !important;
+                border-radius: 8px !important;
+            }
+            #tab-info .mb-4, #tab-info .mb-3 {
+                margin-bottom: 8px !important;
+            }
+
+            /* 1. 天氣卡片區：改為網格，一排 5 天塞滿寬度 */
+            #weather-container {
+                display: grid !important;
+                grid-template-columns: repeat(5, 1fr) !important;
+                gap: 6px !important;
+                padding-bottom: 0 !important;
+            }
+            .weather-card {
+                width: auto !important;
+                padding: 6px !important;
+                margin: 0 !important;
+            }
+            .weather-card .text-2xl {
+                font-size: 1.25rem !important;
+                margin: 2px 0 !important;
+            }
+
+            /* 2. AI 助手區：改為單行左右並排，隱藏無法點擊的按鈕 */
+            #tab-info > div:nth-child(2) {
+                display: flex !important;
+                flex-direction: row !important;
+                align-items: center !important;
+                justify-content: space-between !important;
+            }
+            #tab-info > div:nth-child(2) > div:first-child {
+                margin-bottom: 0 !important;
+            }
+            #tab-info > div:nth-child(2) a {
+                display: none !important; /* 隱藏按鈕 */
+            }
+            #tab-info > div:nth-child(2) .space-y-1 {
+                display: flex !important;
+                gap: 12px !important;
+                margin-top: 0 !important;
+            }
+            #tab-info > div:nth-child(2) p {
+                margin: 0 !important;
+            }
+
+            /* 3. 行李規定區：內部改為 Grid 左右並排 */
+            #tab-info > div:nth-child(3) .space-y-4 {
+                display: grid !important;
+                grid-template-columns: 1fr 1fr !important;
+                gap: 10px !important;
+                margin-top: 0 !important;
+            }
+            #tab-info > div:nth-child(3) .space-y-4 > * + * {
+                margin-top: 0 !important;
+            }
+            /* 航空額度 (第一個子區塊) 佔滿整行 */
+            #tab-info > div:nth-child(3) .space-y-4 > div:nth-child(1) {
+                grid-column: span 2 !important;
+            }
+            /* 縮小行李區塊內的 Padding 與字體 */
+            #tab-info > div:nth-child(3) .p-3 {
+                padding: 8px !important;
+            }
+            #tab-info h2 {
+                font-size: 1.1rem !important;
+                margin-bottom: 8px !important;
+            }
+            #tab-info ul.grid {
+                gap: 6px !important;
+            }
+            #tab-info li {
+                padding: 6px !important;
+                font-size: 0.75rem !important;
+                line-height: 1.2 !important;
             }
         }
     </style>
