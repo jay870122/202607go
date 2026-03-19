@@ -147,7 +147,7 @@
                 visibility: visible !important;
             }
 
-            /* ======= 解決 C 組巨大空白：允許外層卡片自然跨頁 ======= */
+            /* ======= 解決跨頁空白：允許外層卡片自然跨頁 ======= */
             body.print-book .filterable-item, body.print-book .bg-white {
                 page-break-inside: auto !important;
                 break-inside: auto !important;
@@ -177,7 +177,7 @@
             body.print-book .timeline-dot { width: 30px !important; height: 30px !important; font-size: 11px !important; top: 6px !important; left: 4px !important; }
             body.print-book .timeline-line { left: 18px !important; }
 
-            /* ======= 航班與住宿 (合為一頁) 極致壓縮 ======= */
+            /* ======= 航班與住宿 (合為一頁) 雙欄極致壓縮 ======= */
             body.print-book #tab-flights::before {
                 content: "✈️ 航班資訊";
                 display: block;
@@ -194,7 +194,7 @@
                 font-size: 1.5rem;
                 font-weight: bold;
                 color: #1e293b;
-                margin-top: 0.5rem; /* 緊接在航班下面 */
+                margin-top: 1rem; /* 緊接在航班下面 */
                 margin-bottom: 1rem;
                 padding-bottom: 0.5rem;
                 border-bottom: 2px solid #e2e8f0;
@@ -207,21 +207,62 @@
                 padding-top: 10px !important;
             }
 
-            /* 隱藏原本線上版自帶的 Header */
+            /* 隱藏原本線上版自帶的深色 Header 與標題 */
             body.print-book #tab-flights .bg-slate-900 { display: none !important; }
             body.print-book #tab-hotels h2.text-lg { display: none !important; }
-            body.print-book #tab-hotels > div { padding: 0 !important; border: none !important; }
+            
+            /* 清除背景與陰影 */
+            body.print-book #tab-flights > div,
+            body.print-book #tab-hotels > div { 
+                padding: 0 !important; 
+                border: none !important; 
+                background: transparent !important;
+                box-shadow: none !important;
+            }
 
-            /* 隱藏無用的互動按鈕 (節省大量垂直空間) */
+            /* 隱藏無用的互動按鈕 */
             body.print-book .flight-row .text-right.mt-3 { display: none !important; }
             body.print-book #tab-hotels a.block { display: none !important; }
 
-            /* 壓縮航班與住宿卡片 */
-            body.print-book .flight-row { padding: 8px 12px !important; }
-            body.print-book .flight-row .mb-3 { margin-bottom: 4px !important; }
-            body.print-book #tab-hotels .p-4 { padding: 8px 12px !important; margin-bottom: 8px !important; }
-            body.print-book #tab-hotels .space-y-4 > * + * { margin-top: 6px !important; }
-            body.print-book #tab-hotels .mt-2.space-y-1 { margin-top: 4px !important; }
+            /* 航班：改為雙欄並排，且轉為適合紙本閱讀的亮色底深色字 */
+            body.print-book .flight-board {
+                display: grid !important;
+                grid-template-columns: 1fr 1fr !important;
+                gap: 12px !important;
+                background-color: transparent !important;
+                color: #334155 !important;
+            }
+            body.print-book .flight-row { 
+                padding: 12px !important; 
+                border: 2px solid #e2e8f0 !important; 
+                border-radius: 8px !important;
+                background-color: white !important;
+                margin: 0 !important;
+                color: #334155 !important;
+            }
+            body.print-book .flight-row .mb-3 { margin-bottom: 6px !important; }
+            body.print-book .flight-row .text-slate-400 { color: #64748b !important; }
+            body.print-book .flight-row .text-yellow-400 { color: #d97706 !important; } /* 加深黃色增加紙本對比度 */
+            body.print-book .flight-row .text-slate-300 { color: #94a3b8 !important; }
+
+            /* 住宿：改為雙欄並排，高度減半 */
+            body.print-book #tab-hotels .space-y-4 {
+                display: grid !important;
+                grid-template-columns: 1fr 1fr !important;
+                gap: 12px !important;
+            }
+            body.print-book #tab-hotels .space-y-4 > * + * { margin-top: 0 !important; }
+            body.print-book #tab-hotels .p-4 { 
+                padding: 12px !important; 
+                margin-bottom: 0 !important; 
+                border: 1px solid #e2e8f0 !important;
+            }
+            body.print-book #tab-hotels .mt-2.space-y-1 { margin-top: 6px !important; }
+            /* 房型清單壓扁 */
+            body.print-book #tab-hotels .space-y-1 > div {
+                padding: 4px 8px !important;
+                font-size: 0.7rem !important;
+            }
 
             /* ======= 行前準備 (Info) 極致壓縮排版 ======= */
             body.print-book #tab-info::before {
