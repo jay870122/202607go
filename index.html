@@ -102,6 +102,8 @@
                 border-radius: 0 !important;
                 page-break-after: always !important; 
                 break-after: page !important;
+                background: white !important; /* 封面改為白底 */
+                color: #1e293b !important; /* 確保文字為深色 */
             }
             body.print-book header > div {
                 flex-direction: column !important;
@@ -112,6 +114,7 @@
                 flex-direction: column !important;
                 margin-bottom: 2rem !important;
                 line-height: 1.3 !important;
+                color: #1e293b !important; /* 深色標題 */
             }
             body.print-book header h1 span {
                 font-size: 5rem !important; 
@@ -122,7 +125,8 @@
             body.print-book #header-date {
                 font-size: 1.5rem !important;
                 margin-left: 0 !important;
-                opacity: 0.9;
+                color: #64748b !important; /* 深灰日期 */
+                opacity: 1 !important;
             }
             body.print-book header::after {
                 content: "專屬旅遊手冊";
@@ -130,9 +134,10 @@
                 margin-top: 4rem;
                 font-size: 1.2rem;
                 letter-spacing: 0.5em;
-                opacity: 0.7;
-                border-top: 1px solid rgba(255,255,255,0.3);
+                color: #64748b !important; /* 深灰副標 */
+                border-top: 1px solid #cbd5e1 !important; /* 淺灰分隔線 */
                 padding-top: 1rem;
+                opacity: 1 !important;
             }
 
             /* 展開所有分頁變成章節 */
