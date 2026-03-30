@@ -86,6 +86,9 @@
             body:not(.print-book) .tab-content.active {
                 display: block !important; 
             }
+            body:not(.print-book) .print-notes-section {
+                display: none !important;
+            }
 
             /* --- 書籍列印專屬樣式 --- */
             body.print-book { font-size: 11pt !important; }
@@ -152,7 +155,7 @@
                 visibility: visible !important;
             }
 
-            /* ======= 確保同一天的行程/航班與住宿卡片絕對不被切半 ======= */
+            /* ======= 解決跨頁空白：允許外層卡片自然跨頁 ======= */
             body.print-book .filterable-item, 
             body.print-book .bg-white.rounded-xl,
             body.print-book .flight-row {
@@ -176,13 +179,26 @@
                 padding-bottom: 0.5rem;
                 border-bottom: 2px solid #e2e8f0;
             }
-            body.print-book #tab-itinerary > div { margin-top: 10px !important; margin-bottom: 0 !important; }
+            body.print-book #tab-itinerary > div:not(.print-notes-section) { margin-top: 10px !important; margin-bottom: 0 !important; }
             body.print-book #tab-itinerary .bg-white.p-4 { padding: 12px 16px !important; }
             body.print-book #tab-itinerary .mb-2 { margin-bottom: 6px !important; }
             body.print-book #tab-itinerary ul.space-y-2 > * + * { margin-top: 4px !important; }
             body.print-book #tab-itinerary ul > div { margin: 6px 0 !important; padding: 8px 12px !important; }
             body.print-book .timeline-dot { width: 30px !important; height: 30px !important; font-size: 11px !important; top: 6px !important; left: 4px !important; }
             body.print-book .timeline-line { left: 18px !important; }
+
+            /* ======= 筆記欄位 (填補剩餘空白) ======= */
+            body.print-book .print-notes-section {
+                display: block !important;
+                margin-top: 40px !important;
+                page-break-inside: avoid;
+            }
+            body.print-book .notes-lines {
+                height: 45vh; /* 約佔據半頁的高度 */
+                background-image: repeating-linear-gradient(transparent, transparent 31px, #cbd5e1 31px, #cbd5e1 32px);
+                border-top: 1px solid #cbd5e1;
+                margin-top: 15px;
+            }
 
             /* ======= 航班與住宿 (合為一頁) 雙欄極致壓縮 ======= */
             body.print-book #tab-flights::before {
@@ -631,6 +647,15 @@
                         </ul>
                     </div>
                 </div>
+
+                <!-- 列印專屬：筆記欄 -->
+                <div class="hidden print-notes-section mt-8 pt-4">
+                    <h3 class="text-lg font-bold text-slate-500 mb-6 flex items-center">
+                        <i class="fa-solid fa-pen mr-2 text-slate-400"></i> 這邊給您留下美好回憶...
+                    </h3>
+                    <div class="notes-lines w-full"></div>
+                </div>
+
             </div>
 
             <!-- 第二章：航班資訊 -->
