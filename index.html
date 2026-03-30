@@ -152,12 +152,14 @@
                 visibility: visible !important;
             }
 
-            /* ======= 解決跨頁空白：允許外層卡片自然跨頁 ======= */
-            body.print-book .filterable-item, body.print-book .bg-white {
-                page-break-inside: auto !important;
-                break-inside: auto !important;
+            /* ======= 確保同一天的行程/航班與住宿卡片絕對不被切半 ======= */
+            body.print-book .filterable-item, 
+            body.print-book .bg-white.rounded-xl,
+            body.print-book .flight-row {
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
             }
-            body.print-book .flight-row, body.print-book .bg-slate-50, body.print-book .bg-blue-50\/50,
+            body.print-book .bg-slate-50, body.print-book .bg-blue-50\/50,
             body.print-book .bg-emerald-50\/50, body.print-book .bg-orange-50\/50, body.print-book li {
                 page-break-inside: avoid !important;
                 break-inside: avoid !important;
